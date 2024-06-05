@@ -1,0 +1,317 @@
+public class Benchmark {
+
+	// a method to generate a random array using math.random()
+	public static int[] randomArray(int n) {
+		// Takes in the size of the array and allocated that space to a new int array
+		int[] array = new int[n];
+		// loops over empty array and allocated each slot with a random number between
+		// 0-100
+		for (int i = 0; i < n; i++) {
+			array[i] = (int) (Math.random() * 100);
+		}
+		return array;
+	}
+
+	// Takes in the randomly inputted array of a certain length and copies that
+	// array into this new one
+	public static int[] unsortedCopiedArr(int[] randomArray) {
+		// creates new array of the same length
+		int[] dest = new int[randomArray.length];
+		// .arraycopy() is used to copy into new array and returned
+		System.arraycopy(randomArray, 0, dest, 0, randomArray.length);
+		return dest;
+	}
+
+	// Code referenced from lectures
+	// Main benchmarking method to run the all 5 sorting algorithms
+	public static void benchmarkAlgs(int inSize) {
+		// local methods needed to calculate the average miliseconds each algorithm
+		// takes after being
+		// ran 10 times and on different input sizes
+		double bubbleTotal = 0.000;
+		double selectionTotal = 0.000;
+		double insertionTotal = 0.000;
+		double countTotal = 0.000;
+		double mergeTotal = 0.000;
+
+		double bubbleAv = 0.000;
+		double selectionAv = 0.000;
+		double insertionAv = 0.000;
+		double countAv = 0.000;
+		double mergeAv = 0.000;
+
+		// RandomArray method is called on the different array sizes
+		int[] arr = randomArray(inSize);
+
+		// for loop to iterate and run the sorting algorithm 10 times.
+		// very similar if not a duplicate for all 5 algorithms
+		for (int i = 0; i < 10; i++) {
+			// Copy array method is called and the start time is documented
+			int[] cloned = unsortedCopiedArr(arr);
+			long startTime = System.nanoTime();
+
+			// Bubble sort algorithm called using the cloned array
+			bubbleSortAlgorithm(cloned);
+
+			// The end time of the algorithm is documented
+			// The length of time it took for the bubble sort algorithm to execute is
+			// documented
+			// by subtracting the start time from the end time. These miliseconds are then
+			// converted
+			// into miliseconds, then the total is assigned to the total variable
+			long bubbleEndTime = System.nanoTime();
+			long bubbleTimeElapsed = bubbleEndTime - startTime;
+			double bubbleElapsedMillis = bubbleTimeElapsed / 1000000.0;
+			bubbleTotal += bubbleElapsedMillis;
+		}
+
+		// For loops similar to above
+		for (int i = 0; i < 10; i++) {
+			int[] cloned = unsortedCopiedArr(arr);
+			long startTime = System.nanoTime();
+
+			selectionSort(cloned);
+
+			long selectionEndTime = System.nanoTime();
+			long selectionTimeElapsed = selectionEndTime - startTime;
+			double selectionElapsedMillis = selectionTimeElapsed / 1000000.0;
+			selectionTotal += selectionElapsedMillis;
+		}
+
+		for (int i = 0; i < 10; i++) {
+			int[] cloned = unsortedCopiedArr(arr);
+			long startTime = System.nanoTime();
+
+			insertionSort(cloned);
+
+			long insertionEndTime = System.nanoTime();
+			long insertionTimeElapsed = insertionEndTime - startTime;
+			double insertionElapsedMillis = insertionTimeElapsed / 1000000.0;
+			insertionTotal += insertionElapsedMillis;
+
+		}
+
+		for (int i = 0; i < 10; i++) {
+			int[] cloned = unsortedCopiedArr(arr);
+			long startTime = System.nanoTime();
+
+			int last = cloned.length;
+			countSort(cloned);
+
+			long countEndTime = System.nanoTime();
+			long countTimeElapsed = countEndTime - startTime;
+			double countElapsedMillis = countTimeElapsed / 1000000.0;
+			countTotal += countElapsedMillis;
+
+		}
+
+		for (int i = 0; i < 10; i++) {
+			int[] cloned = unsortedCopiedArr(arr);
+			long startTime = System.nanoTime();
+
+			int last = cloned.length;
+			mergeSort(cloned, 0, last / 2, last - 1);
+
+			long mergeEndTime = System.nanoTime();
+			long mergeTimeElapsed = mergeEndTime - startTime;
+			double mergeElapsedMillis = mergeTimeElapsed / 1000000.0;
+			mergeTotal += mergeElapsedMillis;
+		}
+
+		// The average is calculated by dividing the total of each iteration by 10
+		bubbleAv = bubbleTotal / 10;
+		selectionAv = selectionTotal / 10;
+		insertionAv = insertionTotal / 10;
+		mergeAv = mergeTotal / 10;
+		countAv = countTotal / 10;
+
+		// Referenced from
+		// https://stackoverflow.com/questions/12806278/double-decimal-formatting-in-java
+		// and https://www.youtube.com/watch?v=Uh9yecTM4Vg&t=138s for formatting
+		System.out.println("");
+		System.out.format("%8s", "Size: " + inSize);
+		System.out.printf("%5s", "");
+		System.out.print("");
+		System.out.printf("Bubble Sort: " + "%-10.3f", bubbleAv);
+		System.out.printf("Selection Sort: " + "%-10.3f", selectionAv);
+		System.out.printf("Insertion Sort: " + "%-10.3f", insertionAv);
+		System.out.printf("Merge Sort: " + "%-10.3f", mergeAv);
+		System.out.printf("Counting Sort: " + "%-10.3f", countAv);
+		System.out.print("");
+	}
+
+	// Referenced from
+	// https://www.naukri.com/code360/library/implementing-bubble-sort-in-java
+	static void bubbleSortAlgorithm(int array[]) {
+		// new array created that's the same size of array param
+		// outer loop iterates over the array except the last one
+		// inner loop iterates over the element just before the outer loop i
+		// if the current element is bigger than the next, then it will be swapped.
+		int size = array.length;
+
+		for (int i = 0; i < size - 1; i++)
+			for (int j = 0; j < size - i - 1; j++)
+				if (array[j] > array[j + 1]) {
+					int temp = array[j];
+					array[j] = array[j + 1];
+					array[j + 1] = temp;
+
+				}
+	}
+
+	// Referenced from https://www.javatpoint.com/insertion-sort-in-java
+	// new array the same size of array param
+	// loops over each element starting at the 2nd index and the current index is
+	// stored in 'key' variable
+	// The index before the current key element is compared with the key.
+	// If the left index element is bigger than the key element then it is moved
+	// over to the right of
+	// the key by one. Then it moves down the array from the position of the key to
+	// the beginning(left)
+	public static void insertionSort(int[] arr) {
+		int n = arr.length;
+		for (int j = 1; j < n; j++) {
+			int key = arr[j];
+			int i = j - 1;
+			while ((i > -1) && (arr[i] > key)) {
+				arr[i + 1] = arr[i];
+				i--;
+			}
+			arr[i + 1] = key;
+		}
+	}
+
+	// Referenced from:
+	// https://www.baeldung.com/java-selection-sort#:~:text=Selection%20Sort%20begins%20with%20the,in%20the%201st%20position.
+	// The outer loop iterates over the cloned array and assumes the current index
+	// 'i' is the minimum. The inner loop iterates over the array just after the i
+	// index and
+	// searches for the minimum index. if the i (min) element is bigger then j
+	// 'current'
+	// element, then min will be updated and swapped placing the min element at the
+	// correct(i) index
+
+	public static void selectionSort(int[] arr) {
+		for (int i = 0; i < arr.length - 1; i++) {
+			int minElementIndex = i;
+			for (int j = i + 1; j < arr.length; j++) {
+				if (arr[minElementIndex] > arr[j]) {
+					minElementIndex = j;
+				}
+			}
+
+			if (minElementIndex != i) {
+				int temp = arr[i];
+				arr[i] = arr[minElementIndex];
+				arr[minElementIndex] = temp;
+			}
+		}
+	}
+
+	// Referenced from: https://www.geeksforgeeks.org/java-program-for-merge-sort/
+	// This code separates the array into 2 'subarrays'
+	static void mergeSort(int arr[], int first, int middle, int last) {
+		// 2 variables created where n1 is stores the first half of the array and n2
+		// stores the last half
+		int n1 = middle - first + 1;
+		int n2 = last - middle;
+
+		// 2 temp arrays created to store previous n1 & n2 arrays
+		int L[] = new int[n1];
+		int R[] = new int[n2];
+
+		// 2 loops copy the 2 arrays into the 2 temp arrays
+		for (int i = 0; i < n1; ++i)
+			L[i] = arr[first + i];// L[] is assigned indexes from first to the middle index
+		for (int j = 0; j < n2; ++j)
+			R[j] = arr[middle + 1 + j];// R[] is assigned indexes from the middle + 1
+										// to the last index
+
+		// Merge the temp arrays
+		// Initialised the 3 variable indexes for iterating through and tracking
+		// the current position at temp L[] and R[] array and original arr[]
+		int i = 0, j = 0;
+		int k = first;
+
+		// Loop iterates through L[] and R[] and compares elements then merging them
+		// together into the original array
+		while (i < n1 && j < n2) {
+			if (L[i] <= R[j]) { // if index L is greater than index R, then it is
+				arr[k] = L[i];// copied into the original array
+				i++; // and incremented
+			} else { // else R is copied into the original array and incremented
+				arr[k] = R[j];
+				j++;
+			}
+			k++; // Original array is also incremented
+		}
+
+		// Loop copies any remaining elements of L[] into the original array arr[]
+		while (i < n1) {
+			arr[k] = L[i];
+			i++;
+			k++;
+		}
+
+		// Loop copies any remaining elements of R[] into the original array arr[]
+		while (j < n2) {
+			arr[k] = R[j];
+			j++;
+			k++;
+		}
+	}
+
+	// Main function uses recursion and sorts arr[l..r] using
+	// the above mergeSort()
+	void sort(int arr[], int l, int r) {
+		if (l < r) {
+			// Finds the middle index of the current subarray, splitting it into two halves.
+			int m = (l + r) / 2;
+
+			// Recursively calls the current method and sorts the first and
+			// second halves of the current subarray
+			sort(arr, l, m);
+			sort(arr, m + 1, r);
+
+			// Calls the above mergeSort function to merge the sorted left and right halves
+			// of the current subarray.
+			mergeSort(arr, l, m, r);
+		}
+	}
+
+	// Referenced from: https://www.geeksforgeeks.org/counting-sort/
+	public static void countSort(int[] inputArray) {
+		int N = inputArray.length;// N is assigned the length of the array
+		int M = 0;// M to store the maximum element
+
+		for (int i = 0; i < N; i++) {
+			M = Math.max(M, inputArray[i]); // finds out the max value and assigns it to M
+		}
+		// initialises countArray of length M + 1 to make space for 0. It stores
+		// the frequency of each number
+		int[] countArray = new int[M + 1];
+
+		// loops through array and increments the count of that element in the array.
+		for (int i = 0; i < N; i++) {
+			countArray[inputArray[i]]++;
+		}
+		// loop finds the prefix sums in countArray by adding the count of the current
+		// element with the count of the previous element
+		for (int i = 1; i <= M; i++) {
+			countArray[i] += countArray[i - 1];
+		}
+
+		// new variable to store
+		int[] outputArray = new int[N];
+
+		// Now we iterate from the end of the input array to the beginning
+		// Then placing the curren t value inputArray[i] in the right position
+		for (int i = N - 1; i >= 0; i--) {
+			// The position is decided by the count of that element in the count array
+			outputArray[countArray[inputArray[i]] - 1] = inputArray[i];
+			countArray[inputArray[i]]--; // then the count of that element is decremented
+		}
+
+	}
+
+}
