@@ -1,0 +1,12 @@
+package ie.atu.cta;
+
+public class main {
+	public static void main(String[] args) {
+		Benchmark w = new Benchmark();
+		// w.benchmark(100);
+		int[] array = { 10, 100, 250, 500, 750, 1000, 1250, 2500, 3750, 5000, 6250, 7500, 8750, 10000 };
+		for (int j : array) {
+			Benchmark.benchmarkAlgs(j);
+		}
+	}
+}
